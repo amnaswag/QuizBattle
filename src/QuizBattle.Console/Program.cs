@@ -2,6 +2,7 @@
 using QuizBattle.Console;
 using QuizBattle.Console.Extensions;
 using QuizBattle.Domain;
+using QuizBattle.Application.Interfaces;
 
 const int numberOfQuestions = 3;
 

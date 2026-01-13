@@ -1,10 +1,52 @@
 ﻿using QuizBattle.Domain;
+using QuizBattle.Application.Interfaces;
+using System.Collections.ObjectModel;
 
 namespace QuizBattle.Console
 {
     public class InMemoryQuestionRepository : IQuestionRepository
     {
-        public List<Question> GetAll() => QuestionUtils.SeedQuestions();
+        public Task<Question?> GetByCodeAsync(string code, CancellationToken ct)
+        {
+            // seeda alla frågor
+            var questions = QuestionUtils.SeedQuestions();
+
+            // hämta den första frågan som matchar code
+            var question = questions.FirstOrDefault(question => question.Code == code);
+
+            // returner question asynkront
+            return Task.FromResult(question);
+        }
+
+        // hämta en readonly-lista med exakt count antal frågor
+        // Listan med frågor ska matcha category och difficulty om icke-null.
+        public Task<IReadOnlyList<Question>> GetRandomAsync(
+            string? category, 
+            int? difficulty, 
+            int count, 
+            CancellationToken ct)
+        {
+            // seeda alla frågor
+            var questions = QuestionUtils.SeedQuestions();
+
+            // skapa slump-generatorn.
+            var random = new Random();
+
+            // välja slumpmässigt en fråga
+            var randomizedQuestions = questions.OrderBy(question => random.NextInt64());
+
+            // validera antalet matchande frågor.
+            if (randomizedQuestions.Count() >= count)
+            {
+                throw new ArgumentOutOfRangeException(
+                    $"Begärt antal frågor={count} men det fanns bara {randomizedQuestions.Count()} frågor.");
+            }
+
+            // returnerna count antal frågor. 
+            return Task.FromResult<IReadOnlyList<Question>>(randomizedQuestions
+                                        .Take(count)
+                                        .ToList());
+        }
 
         private static class QuestionUtils
         {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QuizBattle.Console.Extensions;
 using QuizBattle.Domain;
+using QuizBattle.Application.Interfaces;
 
 namespace QuizBattle.Console
 {
