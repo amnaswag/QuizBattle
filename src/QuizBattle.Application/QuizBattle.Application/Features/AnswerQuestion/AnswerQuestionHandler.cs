@@ -25,7 +25,6 @@ public class AnswerQuestionHandler
         }
 
         session.SubmitAnswer(question, command.SelectedChoiceCode, DateTime.UtcNow);
-        await _sessionRepository.SaveAsync(session, ct);
 
         var lastAnswer = session.Answers.LastOrDefault();
 
